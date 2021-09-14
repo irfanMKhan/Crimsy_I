@@ -66,10 +66,12 @@
         "noMessagesMessage": "Não há mensagens na reunião ainda. Inicie uma conversa aqui!",
         "nickname": {
             "popover": "Escolha um apelido",
-            "title": "Digite um apelido para usar o bate-papo"
+            "title": "Digite um apelido para usar o bate-papo",
+            "titleWithPolls": "Digite um apelido para usar o bate-papo"
         },
         "privateNotice": "Mensagem privada para {{recipient}}",
         "title": "Bate-papo",
+        "titleWithPolls": "Bate-papo",
         "you": "você",
         "message": "Mensagem",
         "messageAccessibleTitle": "{{user}} disse:",
@@ -209,7 +211,6 @@
         "e2eeLabel": "Enable End-to-End Encryption",
         "e2eeWarning": "WARNING: Not all participants in this meeting seem to have support for End-to-End encryption. If you enable it they won't be able to see nor hear you.",
         "enterDisplayName": "Digite seu nome aqui",
-        "enterDisplayNameToJoin": "Digite seu nome para participar",
         "embedMeeting": "Reunião em formato compacto",
         "error": "Erro",
         "gracefulShutdown": "Nosso serviço está em manutenção. Tente novamente mais tarde.",

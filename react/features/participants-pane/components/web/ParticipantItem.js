@@ -1,20 +1,19 @@
 // @flow
 
-import React, { type Node } from 'react';
+import React, { type Node, useCallback } from 'react';
 
 import { Avatar } from '../../../base/avatar';
 import {
-    Icon,
-    IconCameraEmpty,
-    IconCameraEmptyDisabled,
-    IconMicrophoneEmpty,
-    IconMicrophoneEmptySlash
-} from '../../../base/icons';
-import { ACTION_TRIGGER, MEDIA_STATE, type ActionTrigger, type MediaState } from '../../constants';
+    ACTION_TRIGGER,
+    AudioStateIcons,
+    MEDIA_STATE,
+    type ActionTrigger,
+    type MediaState,
+    VideoStateIcons
+} from '../../constants';
 
 import { RaisedHandIndicator } from './RaisedHandIndicator';
 import {
-    ColoredIcon,
     ParticipantActionsHover,
     ParticipantActionsPermanent,
     ParticipantContainer,
@@ -30,54 +29,6 @@ import {
 const Actions = {
     [ACTION_TRIGGER.HOVER]: ParticipantActionsHover,
     [ACTION_TRIGGER.PERMANENT]: ParticipantActionsPermanent
-};
-
-/**
- * Icon mapping for possible participant audio states.
- */
-const AudioStateIcons: {[MediaState]: React$Element<any> | null} = {
-    [MEDIA_STATE.FORCE_MUTED]: (
-        <ColoredIcon color = '#E04757'>
-            <Icon
-                size = { 16 }
-                src = { IconMicrophoneEmptySlash } />
-        </ColoredIcon>
-    ),
-    [MEDIA_STATE.MUTED]: (
-        <Icon
-            size = { 16 }
-            src = { IconMicrophoneEmptySlash } />
-    ),
-    [MEDIA_STATE.UNMUTED]: (
-        <ColoredIcon color = '#1EC26A'>
-            <Icon
-                size = { 16 }
-                src = { IconMicrophoneEmpty } />
-        </ColoredIcon>
-    ),
-    [MEDIA_STATE.NONE]: null
-};
-
-/**
- * Icon mapping for possible participant video states.
- */
-const VideoStateIcons = {
-    [MEDIA_STATE.FORCE_MUTED]: (
-        <Icon
-            size = { 16 }
-            src = { IconCameraEmptyDisabled } />
-    ),
-    [MEDIA_STATE.MUTED]: (
-        <Icon
-            size = { 16 }
-            src = { IconCameraEmptyDisabled } />
-    ),
-    [MEDIA_STATE.UNMUTED]: (
-        <Icon
-            size = { 16 }
-            src = { IconCameraEmpty } />
-    ),
-    [MEDIA_STATE.NONE]: null
 };
 
 type Props = {
@@ -110,12 +61,22 @@ type Props = {
     /**
      * True if the participant is local.
      */
-    local: boolean,
+    local: Boolean,
+
+    /**
+     * Opens a drawer with participant actions.
+     */
+    openDrawerForParticipant: Function,
 
     /**
      * Callback for when the mouse leaves this component
      */
     onLeave?: Function,
+
+    /**
+     * If an overflow drawer can be opened.
+     */
+    overflowDrawer?: boolean,
 
     /**
      * The ID of the participant.
@@ -130,7 +91,7 @@ type Props = {
     /**
      * Media state for video
      */
-    videoMuteState: MediaState,
+    videoMediaState: MediaState,
 
     /**
      * The translated "you" text.
@@ -150,19 +111,28 @@ export default function ParticipantItem({
     onLeave,
     actionsTrigger = ACTION_TRIGGER.HOVER,
     audioMediaState = MEDIA_STATE.NONE,
-    videoMuteState = MEDIA_STATE.NONE,
+    videoMediaState = MEDIA_STATE.NONE,
     displayName,
     participantID,
     local,
+    openDrawerForParticipant,
+    overflowDrawer,
     raisedHand,
     youText
 }: Props) {
     const ParticipantActions = Actions[actionsTrigger];
+    const onClick = useCallback(
+        () => openDrawerForParticipant({
+            participantID,
+            displayName
+        }));
 
     return (
         <ParticipantContainer
             id = { `participant-item-${participantID}` }
             isHighlighted = { isHighlighted }
+            local = { local }
+            onClick = { !local && overflowDrawer ? onClick : undefined }
             onMouseLeave = { onLeave }
             trigger = { actionsTrigger }>
             <Avatar
@@ -179,7 +149,7 @@ export default function ParticipantItem({
                 { !local && <ParticipantActions children = { children } /> }
                 <ParticipantStates>
                     { raisedHand && <RaisedHandIndicator /> }
-                    { VideoStateIcons[videoMuteState] }
+                    { VideoStateIcons[videoMediaState] }
                     { AudioStateIcons[audioMediaState] }
                 </ParticipantStates>
             </ParticipantContent>

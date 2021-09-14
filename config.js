@@ -27,9 +27,6 @@ var config = {
     // Websocket URL
     // websocket: 'wss://jitsi-meet.example.com/xmpp-websocket',
 
-    // The name of client node advertised in XEP-0115 'c' stanza
-    clientNode: 'http://jitsi.org/jitsimeet',
-
     // The real JID of focus participant - can be overridden here
     // Do not change username - FIXME: Make focus username configurable
     // https://github.com/jitsi/jitsi-meet/issues/7376
@@ -44,12 +41,16 @@ var config = {
         // issues related to insertable streams.
         // disableE2EE: false,
 
+        // Enables/disables thumbnail reordering in the filmstrip. It is enabled by default unless explicitly
+        // disabled by the below option.
+        // enableThumbnailReordering: true,
+
         // P2P test mode disables automatic switching to P2P when there are 2
         // participants in the conference.
-        p2pTestMode: true,
+        p2pTestMode: false
 
         // Enables the test specific features consumed by jitsi-meet-torture
-        testMode: true,
+        // testMode: false
 
         // Disables the auto-play behavior of *all* newly created video element.
         // This is useful when the client runs on a host with limited resources.
@@ -147,8 +148,18 @@ var config = {
     // Sets the preferred resolution (height) for local video. Defaults to 720.
     // resolution: 720,
 
+    // Specifies whether the raised hand will hide when someone becomes a dominant speaker or not
+    // disableRemoveRaisedHandOnFocus: false,
+
     // Specifies whether there will be a search field in speaker stats or not
     // disableSpeakerStatsSearch: false,
+
+    // Specifies whether participants in speaker stats should be ordered or not, and with what priority
+    // speakerStatsOrder: [
+    //  'role', <- Moderators on top
+    //  'name', <- Alphabetically by name
+    //  'hasLeft', <- The ones that have left in the bottom
+    // ] <- the order of the array elements determines priority
 
     // How many participants while in the tile view mode, before the receiving video quality is reduced from HD to SD.
     // Use -1 to disable.
@@ -172,9 +183,10 @@ var config = {
     // Enable / disable simulcast support.
     // disableSimulcast: false,
 
-    // Enable / disable layer suspension.  If enabled, endpoints whose HD
-    // layers are not in use will be suspended (no longer sent) until they
-    // are requested again.
+    // Enable / disable layer suspension.  If enabled, endpoints whose HD layers are not in use will be suspended
+    // (no longer sent) until they are requested again. This is enabled by default. This must be enabled for screen
+    // sharing to work as expected on Chrome. Disabling this might result in low resolution screenshare being sent
+    // by the client.
     // enableLayerSuspension: false,
 
     // Every participant after the Nth will start video muted.
@@ -244,8 +256,9 @@ var config = {
     // transcribeWithAppLanguage: true,
 
     // Transcriber language. This settings will only work if "transcribeWithAppLanguage" is explicitly set to false.
-    // Available languages can be found in lang/language.json.
-    // preferredTranscribeLanguage: 'en',
+    // Available languages can be found in
+    // ./src/react/features/transcribing/transcriber-langs.json.
+    // preferredTranscribeLanguage: 'en-US',
 
     // Enables automatic turning on captions when recording is started
     // autoCaptionOnRecord: false,
@@ -254,6 +267,14 @@ var config = {
 
     // Default value for the channel "last N" attribute. -1 for unlimited.
     channelLastN: -1,
+
+    // Connection indicators
+    // connectionIndicators: {
+    //     autoHide: true,
+    //     autoHideTimeout: 5000,
+    //     disabled: false,
+    //     inactiveDisabled: false
+    // },
 
     // Provides a way for the lastN value to be controlled through the UI.
     // When startLastN is present, conference starts with a last-n value of startLastN and channelLastN
@@ -323,7 +344,7 @@ var config = {
     //          VP9: {
     //              low: 100000,
     //              standard: 300000,
-    //              high:  1200000
+    //              high: 1200000
     //          }
     //    },
     //
@@ -387,6 +408,11 @@ var config = {
     // we filter out TURN/UDP because it is usually not needed since the
     // bridge itself is reachable via UDP)
     // useTurnUdp: false
+
+    // Enable support for encoded transform in supported browsers. This allows
+    // E2EE to work in Safari if the corresponding flag is enabled in the browser.
+    // Experimental.
+    // enableEncodedTransformSupport: false,
 
     // UI
     //
@@ -512,6 +538,10 @@ var config = {
     //    'videoquality',
     //    '__end'
     // ],
+
+    // List of pre meeting screens buttons to hide. The values must be one or more of the 5 allowed buttons:
+    // 'microphone', 'camera', 'select-background', 'invite', 'settings'
+    // hiddenPremeetingButtons: [],
 
     // Stats
     //
@@ -668,13 +698,38 @@ var config = {
         // userRegion: "asia"
     },
 
+    // Array<string> of disabled sounds.
+    // Possible values:
+    // - 'E2EE_OFF_SOUND'
+    // - 'E2EE_ON_SOUND'
+    // - 'INCOMING_MSG_SOUND'
+    // - 'KNOCKING_PARTICIPANT_SOUND'
+    // - 'LIVE_STREAMING_OFF_SOUND'
+    // - 'LIVE_STREAMING_ON_SOUND'
+    // - 'NO_AUDIO_SIGNAL_SOUND'
+    // - 'NOISY_AUDIO_INPUT_SOUND'
+    // - 'OUTGOING_CALL_EXPIRED_SOUND'
+    // - 'OUTGOING_CALL_REJECTED_SOUND'
+    // - 'OUTGOING_CALL_RINGING_SOUND'
+    // - 'OUTGOING_CALL_START_SOUND'
+    // - 'PARTICIPANT_JOINED_SOUND'
+    // - 'PARTICIPANT_LEFT_SOUND'
+    // - 'RAISE_HAND_SOUND'
+    // - 'RECORDING_OFF_SOUND'
+    // - 'RECORDING_ON_SOUND'
+    // - 'TALK_WHILE_MUTED_SOUND'
+    // disabledSounds: [],
+
+    // DEPRECATED! Use `disabledSounds` instead.
     // Decides whether the start/stop recording audio notifications should play on record.
     // disableRecordAudioNotification: false,
 
+    // DEPRECATED! Use `disabledSounds` instead.
     // Disables the sounds that play when other participants join or leave the
     // conference (if set to true, these sounds will not be played).
     // disableJoinLeaveSounds: false,
 
+    // DEPRECATED! Use `disabledSounds` instead.
     // Disables the sounds that play when a chat message is received.
     // disableIncomingMessageSound: false,
 
@@ -788,7 +843,11 @@ var config = {
          // The anchor url used when clicking the logo image
          logoClickUrl: 'https://example-company.org',
          // The url used for the image used as logo
-         logoImageUrl: 'https://example.com/logo-img.png'
+         logoImageUrl: 'https://example.com/logo-img.png',
+         // Overwrite for pool of background images for avatars
+         avatarBackgrounds: ['url(https://example.com/avatar-background-1.png)', '#FFF'],
+         // The lobby/prejoin screen background
+         premeetingBackground: 'url(https://example.com/premeeting-background.png)'
      }
     */
     // dynamicBrandingUrl: '',
@@ -849,6 +908,7 @@ var config = {
      disableRemoteControl
      displayJids
      externalConnectUrl
+     e2eeLabels
      firefox_fake_device
      googleApiApplicationClientID
      iAmRecorder
@@ -928,11 +988,19 @@ var config = {
     //     'lobby.notificationTitle', // shown when lobby is toggled and when join requests are allowed / denied
     //     'localRecording.localRecording', // shown when a local recording is started
     //     'notify.disconnected', // shown when a participant has left
+    //     'notify.connectedOneMember', // show when a participant joined
+    //     'notify.connectedTwoMembers', // show when two participants joined simultaneously
+    //     'notify.connectedThreePlusMembers', // show when more than 2 participants joined simultaneously
     //     'notify.grantedTo', // shown when moderator rights were granted to a participant
     //     'notify.invitedOneMember', // shown when 1 participant has been invited
     //     'notify.invitedThreePlusMembers', // shown when 3+ participants have been invited
     //     'notify.invitedTwoMembers', // shown when 2 participants have been invited
     //     'notify.kickParticipant', // shown when a participant is kicked
+    //     'notify.moderationStartedTitle', // shown when AV moderation is activated
+    //     'notify.moderationStoppedTitle', // shown when AV moderation is deactivated
+    //     'notify.moderationInEffectTitle', // shown when user attempts to unmute audio during AV moderation
+    //     'notify.moderationInEffectVideoTitle', // shown when user attempts to enable video during AV moderation
+    //     'notify.moderationInEffectCSTitle', // shown when user attempts to share content during AV moderation
     //     'notify.mutedRemotelyTitle', // shown when user is muted by a remote party
     //     'notify.mutedTitle', // shown when user has been muted upon joining,
     //     'notify.newDeviceAudioTitle', // prompts the user to use a newly detected audio device
@@ -941,6 +1009,7 @@ var config = {
     //     'notify.passwordSetRemotely', // shown when a password has been set remotely
     //     'notify.raisedHand', // shown when a partcipant used raise hand,
     //     'notify.startSilentTitle', // shown when user joined with no audio
+    //     'notify.unmute', // shown to moderator when user raises hand during AV moderation
     //     'prejoin.errorDialOut',
     //     'prejoin.errorDialOutDisconnected',
     //     'prejoin.errorDialOutFailed',
@@ -958,6 +1027,9 @@ var config = {
 
     // Prevent the filmstrip from autohiding when screen width is under a certain threshold
     // disableFilmstripAutohiding: false,
+
+    // Specifies whether the chat emoticons are disabled or not
+    // disableChatSmileys: false,
 
     // Allow all above example options to include a trailing comma and
     // prevent fear when commenting out the last value.

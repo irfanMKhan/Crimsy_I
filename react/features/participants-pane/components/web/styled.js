@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Icon, IconHorizontalPoints } from '../../../base/icons';
 import { ACTION_TRIGGER } from '../../constants';
 
+const MD_BREAKPOINT = '580px';
+
 export const ignoredChildClassName = 'ignore-child';
 
 export const AntiCollapse = styled.br`
@@ -89,7 +91,7 @@ export const ContextMenuIcon = styled(Icon).attrs({
     size: 20
 })`
   & > svg {
-    fill: #a4b8d1;
+    fill: #ffffff;
   }
 `;
 
@@ -99,7 +101,7 @@ export const ContextMenuItem = styled.div`
   cursor: pointer;
   display: flex;
   min-height: 40px;
-  padding: 8px 16px;
+  padding: 10px 16px;
 
   & > *:not(:last-child) {
     margin-right: 16px;
@@ -162,6 +164,12 @@ export const FooterButton = styled(Button)`
   height: 40px;
   font-size: 15px;
   padding: 0 16px;
+
+  @media (max-width: ${MD_BREAKPOINT}) {
+    font-size: 16px;
+    height: 48px;
+    min-width: 48px;
+  }
 `;
 
 export const FooterEllipsisButton = styled(FooterButton).attrs({
@@ -188,11 +196,9 @@ export const Heading = styled.div`
   font-size: 15px;
   line-height: 24px;
   margin: 8px 0 ${props => props.theme.panePadding}px;
-`;
 
-export const ColoredIcon = styled.div`
-  & > div > svg {
-    fill: ${props => props.color || '#fff'};
+  @media (max-width: ${MD_BREAKPOINT}) {
+    font-size: 16px;
   }
 `;
 
@@ -252,6 +258,25 @@ export const ParticipantContent = styled.div`
   padding-right: ${props => props.theme.panePadding}px;
 `;
 
+export const ParticipantStates = styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+  & > * {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  & > *:not(:last-child) {
+    margin-right: 8px;
+  }
+
+  .jitsi-icon {
+    padding: 3px;
+  }
+`;
+
 export const ParticipantContainer = styled.div`
   align-items: center;
   color: white;
@@ -261,6 +286,17 @@ export const ParticipantContainer = styled.div`
   margin: 0 -${props => props.theme.panePadding}px;
   padding-left: ${props => props.theme.panePadding}px;
   position: relative;
+
+  @media (max-width: ${MD_BREAKPOINT}) {
+    font-size: 16px;
+    height: 64px;
+  }
+
+  &:hover {
+    ${ParticipantStates} {
+      ${props => !props.local && 'display: none'};
+    }
+  }
 
   ${props => !props.isHighlighted && '&:hover {'}
     background-color: #292929;
@@ -273,6 +309,10 @@ export const ParticipantContainer = styled.div`
 
     & ${ParticipantContent} {
       box-shadow: none;
+    }
+
+    & ${ParticipantStates} {
+      display: none;
     }
   ${props => !props.isHighlighted && '}'}
 `;
@@ -287,6 +327,11 @@ export const ParticipantInviteButton = styled(Button).attrs({
   & > *:not(:last-child) {
     margin-right: 8px;
   }
+
+  @media (max-width: ${MD_BREAKPOINT}) {
+    font-size: 16px;
+    height: 48px;
+  }
 `;
 
 export const ParticipantName = styled.div`
@@ -300,21 +345,6 @@ export const ParticipantNameContainer = styled.div`
   flex: 1;
   margin-right: 8px;
   overflow: hidden;
-`;
-
-export const ParticipantStates = styled.div`
-  display: flex;
-  justify-content: flex-end;
-
-  & > * {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-  }
-
-  & > *:not(:last-child) {
-    margin-right: 8px;
-  }
 `;
 
 export const RaisedHandIndicatorBackground = styled.div`
